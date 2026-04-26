@@ -2,6 +2,7 @@ package main
 
 import (
 	"log"
+	"os"
 
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
@@ -9,13 +10,19 @@ import (
 )
 
 func main() {
-	err := godotenv.Load()
+	//Load env
+	err := godotenv.Load("../.env")
 	if err != nil {
 		log.Println("No .env file found ")
 	}
 	server := gin.Default()
 	log.Println("Server starting.....")
 	Routes.RegisterRoutes(server)
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "8080" // fallback port
+	}
+	log.Println("Server running on port ", port)
 
-	server.Run()
+	server.Run(":" + port)
 }
